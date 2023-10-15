@@ -9,7 +9,8 @@ Resources:
   MyEC2Instance:
     Type: AWS::EC2::Instance
     Properties:
-      ImageId: ami-041feb57c611358bd 
+      #ImageId: ami-041feb57c611358bd 
+      ImageId:  ami-053b0d53c279acc90
       InstanceType: t3.small
       KeyName: SLIIT_Test
       SecurityGroupIds:
@@ -17,19 +18,25 @@ Resources:
       UserData:
         Fn::Base64: !Sub |
           #!/bin/bash
-          sudo yum update -y
-          sudo yum install -y docker
+          sudo apt update -y
+          #sudo apt install -y docker
+          sudo apt install docker.io
           sudo service docker start
-          sudo usermod -aG docker ec2-user
-          sudo apt-get install git-all
+          #sudo usermod -aG docker ec2-user 
+          sudo usermod -aG docker ubuntu
+          sudo apt install git-all
           sudo git clone https://github.com/manuja/DeveloperIQ.git
+          #docker build -f Dockerfile -t  developeriq .
           sudo apt install curl
           curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
           sudo install minikube-linux-amd64 /usr/local/bin/minikube
           # (Install kubectl and other dependencies as needed)
           curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
           sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
-          minikube start --driver=kvm2
+          #minikube start --driver=kvm2
+          #sudo kubectl create --filename /DeveloperIQ/examdocapp/deployment.yaml
+          #sudo kubectl create --filename /DeveloperIQ/examdocapp/service.yaml
+          #sudo minikube image load developeriq:latest
 
   MyRDSInstance:
     Type: AWS::RDS::DBInstance
