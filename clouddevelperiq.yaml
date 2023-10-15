@@ -18,48 +18,29 @@ Resources:
       UserData:
         Fn::Base64: !Sub |
           #!/bin/bash
-          sudo apt update -y
-          #sudo apt install -y docker
-          sudo apt install docker.io
-          sudo service docker start
-          #sudo usermod -aG docker ec2-user 
+          #install docker
+          curl -fsSL https://get.docker.com -o get-docker.sh
+          sudo sh get-docker.sh
           sudo usermod -aG docker ubuntu
-          sudo apt install git-all
+          #install git
+          sudo apt update
+          sudo apt install git
           sudo git clone https://github.com/manuja/DeveloperIQ.git
-          #docker build -f Dockerfile -t  developeriq .
+          #install curl
           sudo apt install curl
+          #install minikube
           curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
           sudo install minikube-linux-amd64 /usr/local/bin/minikube
-          # (Install kubectl and other dependencies as needed)
+          #install kubectl
           curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
           sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
-          #minikube start --driver=kvm2
+          minikube start
           #sudo kubectl create --filename /DeveloperIQ/examdocapp/deployment.yaml
           #sudo kubectl create --filename /DeveloperIQ/examdocapp/service.yaml
           #sudo minikube image load developeriq:latest
-
-  MyRDSInstance:
-    Type: AWS::RDS::DBInstance
-    Properties:
-      AllocatedStorage: 5
-      DBInstanceIdentifier: aecs
-      Engine: mysql
-      MasterUsername: admin
-      MasterUserPassword: Bd#19891104
-      DBInstanceClass: db.t3.micro
-      AutoMinorVersionUpgrade: false  # Disable automatic minor version upgrades
-      BackupRetentionPeriod: 0        # Set backup retention period to 0 days (disabling automatic backups)
-      CopyTagsToSnapshot: false
-      VPCSecurityGroups:
-        - sg-074acc700bc27ee1a  # Replace with your security group ID
-      PubliclyAccessible: true
-      
 
 Outputs:
   EC2PublicIP:
     Description: Public IP address of the EC2 instance
     Value: !GetAtt MyEC2Instance.PublicIp
-  RDSHostName:
-    Description: Hostname of the RDS instance
-    Value: !GetAtt MyRDSInstance.Endpoint.Address
 
